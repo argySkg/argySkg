@@ -1,1 +1,53 @@
+# πρώτα εισάγω τις βιβλιοθήκες
+from google.colab import drive
+from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
+
+# πως εισάγω δεδομένα από το drive?
+drive.mount('/content/drive')
+df = pd.read_csv("/content/drive/My Drive/Plots_fire.txt", sep="\t")
+print(df)
+
+df = df.dropna()
+print(df)
+
+#μετατροπή των δεδομένων απόPANDAS DATA FRAME σε NUMPY FORMAT
+
+data_target = df.to_numpy()
+print(data_target.shape)
+
+#OBTAINING FEATURES AND TARGET VARIABLE FROM THE DATA
+data = data_target[:,1: -1]
+target = data_target[:,4]
+print(data.shape)
+print(target.shape)
+print(data)
+print("====")
+print(target)
+
+data, target = shuffle(data,target)
+X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.33)
+
+lr = LogisticRegression(random_state=0)
+lr.fit(X_train, y_train)
+lr_prediction = lr.predict(X_test)
+lr_prediction_proba = lr.predict_proba(X_test)
+
+print(lr_prediction)
+print("======")
+print(lr_prediction_proba)
+
+coeff_values = lr.coef_
+print(coeff_values)
+coeff_values = coeff_values[0]
+print(coeff_values)
+
+fig, ax = plt.subplots()
+coeff_x = ["coeff1","coeff2","coeff3","coeff4", "coeff5"]
+ax.bar(coeff_x, coeff_values)
+plt.show()
+
 
